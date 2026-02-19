@@ -26,3 +26,20 @@
 - **決定:** MeowMeet (Electron) 和 MeowCRM (Web) 共用同一個 Supabase 專案，MeowMeet 直接用 Supabase SDK 寫入 CRM 資料
 - **原因:** 零延遲、零額外 API 成本、簡化架構
 - **風險:** 兩個產品的 DB migration 需要協調
+
+## ADR-005: 三腦會議 Review 結論（2026-02-19）
+- **日期:** 2026-02-19
+- **狀態:** 已採用
+- **觸發:** SDLC Phase 1 設計文件三腦 Review（Claude + Gemini + GPT）
+
+### PRD 修正
+1. **Free 方案改限 AI 用量** — 從「100 客戶」改為「每月 15 次智慧歸檔」，避免免費仔長期霸佔
+2. **新增 Human-in-the-loop** — NER 修正數據回傳，持續優化辨識品質
+3. **CSV 匯入提升至 v0.2** — 降低歷史資料遷移門檻
+
+### ARCHITECTURE 修正（🔴 安全性）
+4. **MeowMeet 整合改為 Edge Function 中介** — Electron 不能內嵌 Supabase 金鑰（反編譯風險）
+5. **RLS 改用 JWT claims** — 避免子查詢反模式，提升查詢效能
+6. **DB 加索引** — org_id、customer_id、assigned_to 等高頻查詢欄位
+7. **Soft Delete** — 核心表加 deleted_at 欄位，防止誤刪災難
+8. **TEXT → CHECK 約束** — status、role 欄位加 CHECK IN 限制

@@ -66,7 +66,8 @@ Organization (租戶)
 CREATE TABLE organizations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT now()
+  created_at TIMESTAMPTZ DEFAULT now(),
+  deleted_at TIMESTAMPTZ  -- soft delete
 );
 
 -- 組織成員
@@ -74,7 +75,7 @@ CREATE TABLE org_members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  role TEXT DEFAULT 'member', -- 'owner' | 'admin' | 'member'
+  role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'member')),
   created_at TIMESTAMPTZ DEFAULT now(),
   UNIQUE(org_id, user_id)
 );
@@ -85,11 +86,22 @@ CREATE TABLE customers (
   org_id UUID REFERENCES organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   industry TEXT,
-  status TEXT DEFAULT 'active', -- 'active' | 'inactive' | 'lead'
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'lead')),
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  deleted_at TIMESTAMPTZ  -- soft delete
 );
+
+-- 索引
+CREATE INDEX idx_customers_org ON customers(org_id);
+CREATE INDEX idx_contacts_org ON contacts(org_id);
+CREATE INDEX idx_contacts_customer ON contacts(customer_id);
+CREATE INDEX idx_tasks_org ON tasks(org_id);
+CREATE INDEX idx_tasks_assigned ON tasks(assigned_to);
+CREATE INDEX idx_tasks_customer ON tasks(customer_id);
+CREATE INDEX idx_activities_org ON activities(org_id);
+CREATE INDEX idx_activities_customer ON activities(customer_id);
 
 -- 聯絡人
 CREATE TABLE contacts (
@@ -111,7 +123,7 @@ CREATE TABLE tasks (
   customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
   assigned_to UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
-  status TEXT DEFAULT 'todo', -- 'todo' | 'in_progress' | 'done'
+  status TEXT NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'in_progress', 'done')),
   due_date DATE,
   notes TEXT,
   source TEXT, -- 'manual' | 'meowmeet'
@@ -143,15 +155,23 @@ CREATE TABLE activities (
 -- 範例：customers
 ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 
+-- ⚠️ 高效模式：從 JWT claims 讀取 org_id，不做子查詢
+-- 登入時透過 Supabase Auth Hook 將 org_id 寫入 JWT app_metadata
+
 CREATE POLICY "users can view own org customers"
   ON customers FOR SELECT
-  USING (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
+  USING (
+    org_id = (auth.jwt() -> 'app_metadata' ->> 'org_id')::UUID
+    AND deleted_at IS NULL  -- soft delete 過濾
+  );
 
 CREATE POLICY "users can insert own org customers"
   ON customers FOR INSERT
-  WITH CHECK (org_id IN (SELECT org_id FROM org_members WHERE user_id = auth.uid()));
+  WITH CHECK (
+    org_id = (auth.jwt() -> 'app_metadata' ->> 'org_id')::UUID
+  );
 
--- 其他表同理
+-- 其他表同理，皆從 JWT claims 讀取 org_id
 ```
 
 ## 頁面結構
@@ -178,18 +198,19 @@ MeowMeet (Electron App)
     ▼
 智慧歸檔卡片（MeowMeet 端 UI）
     │
-    │ 用戶確認 → 一鍵同步
+    │ 用戶確認/修正（Human-in-the-loop）→ 一鍵同步
     │
     ▼
-MeowCRM Supabase API
+Supabase Edge Function（驗證 API Key + 用戶身份）
     │
-    ├── upsert customers (比對公司名)
-    ├── upsert contacts (比對姓名+公司)
+    ├── upsert customers (模糊比對 + 去重建議)
+    ├── upsert contacts (比對姓名+公司+Email)
     ├── insert activities (type: 'meeting')
-    └── insert tasks (from action items)
+    ├── insert tasks (from action items)
+    └── 記錄 NER 修正數據（用於模型優化）
 ```
 
-**整合方式：** MeowMeet 直接用 Supabase Client SDK 寫入（同一個 Supabase 專案），不需要另建 REST API。
+**⚠️ 安全決策（三腦會議 Review）：** MeowMeet（Electron）**絕不能**直接使用 Supabase Client SDK 或嵌入金鑰。Electron 應用可被反編譯，金鑰會外洩。**必須透過 Supabase Edge Function 中介**，以獨立 API Key + 用戶 JWT 驗證請求合法性。
 
 ## 非功能需求實現
 
