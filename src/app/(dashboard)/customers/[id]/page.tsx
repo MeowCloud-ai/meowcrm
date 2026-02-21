@@ -35,9 +35,15 @@ export default async function CustomerDetailPage({ params }: PageProps) {
     .eq("customer_id", id)
     .order("created_at", { ascending: false })
 
+  const { data: activities } = await supabase
+    .from("activities")
+    .select("*, contacts(id, name)")
+    .eq("customer_id", id)
+    .order("occurred_at", { ascending: false })
+
   return (
     <div className="space-y-6">
-      <CustomerDetail customer={customer} contacts={contacts ?? []} />
+      <CustomerDetail customer={customer} contacts={contacts ?? []} activities={activities ?? []} />
     </div>
   )
 }
