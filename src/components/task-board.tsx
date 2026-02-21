@@ -124,6 +124,9 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
 
   const createTask = async () => {
     if (!newTitle.trim()) return
+    const { data: { user } } = await supabase.auth.getUser()
+    const orgId = user?.app_metadata?.org_id
+    if (!orgId) throw new Error("missing org_id")
     const { data } = await supabase
       .from("tasks")
       .insert({
@@ -132,6 +135,7 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
         due_date: newDueDate || null,
         status: "todo",
         source: "manual",
+        org_id: orgId,
       })
       .select(`
         id, title, status, due_date, assigned_to, customer_id,
