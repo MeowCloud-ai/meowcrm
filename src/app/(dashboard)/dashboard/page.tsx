@@ -14,15 +14,23 @@ export default async function DashboardPage() {
     redirect("/login")
   }
 
+  const orgId = user.app_metadata?.org_id as string | undefined
+
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
   const tomorrowStr = tomorrow.toISOString().split("T")[0]
 
-  const { data: urgentTasks } = await supabase
+  let query = supabase
     .from("tasks")
     .select("id, title, status, due_date, customers ( id, name )")
     .lte("due_date", tomorrowStr)
     .neq("status", "done")
+
+  if (orgId) {
+    query = query.eq("org_id", orgId)
+  }
+
+  const { data: urgentTasks } = await query
 
   return (
     <div className="space-y-6">
