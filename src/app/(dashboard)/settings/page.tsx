@@ -68,7 +68,7 @@ export default async function SettingsPage() {
       </div>
 
       <div className="grid gap-6">
-        <OrgSettings initialName={orgName} />
+        <OrgSettings initialName={orgName} userRole={currentRole} />
         <MemberList members={members} />
         <ProfileSettings
           email={user.email!}

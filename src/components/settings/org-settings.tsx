@@ -9,7 +9,8 @@ import { createClient } from "@/lib/supabase/client"
 import { useOrganization } from "@/lib/hooks/use-organization"
 import { Building2, Loader2, Check } from "lucide-react"
 
-export function OrgSettings({ initialName }: { initialName: string }) {
+export function OrgSettings({ initialName, userRole }: { initialName: string; userRole: string | null }) {
+  const canEdit = userRole === "owner" || userRole === "admin"
   const [name, setName] = useState(initialName)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -51,16 +52,19 @@ export function OrgSettings({ initialName }: { initialName: string }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="輸入組織名稱"
+              disabled={!canEdit}
             />
-            <Button onClick={handleSave} disabled={saving || !name.trim()}>
-              {saving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : saved ? (
-                <Check className="h-4 w-4" />
-              ) : (
-                "儲存"
-              )}
-            </Button>
+            {canEdit && (
+              <Button onClick={handleSave} disabled={saving || !name.trim()}>
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : saved ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  "儲存"
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
