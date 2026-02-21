@@ -69,7 +69,11 @@ export function ActivityFormDialog({ customerId, contacts, onSuccess }: Activity
     setSubmitting(true)
     try {
       const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      const orgId = user?.app_metadata?.org_id
+      if (!orgId) throw new Error("missing org_id")
       const { error } = await supabase.from("activities").insert({
+        org_id: orgId,
         customer_id: customerId,
         type: values.type,
         summary: values.summary,
