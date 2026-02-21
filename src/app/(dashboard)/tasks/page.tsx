@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { TaskBoard } from "@/components/task-board"
+import { TaskReminders } from "@/components/task-reminders"
 
 export default async function TasksPage() {
   const supabase = await createClient()
@@ -36,6 +37,7 @@ export default async function TasksPage() {
         <h1 className="text-2xl font-bold">任務看板</h1>
         <p className="text-muted-foreground">管理您的任務進度</p>
       </div>
+      <TaskReminders tasks={tasks ?? []} />
       <TaskBoard initialTasks={tasks ?? []} />
     </div>
   )
