@@ -29,9 +29,15 @@ export default async function CustomerDetailPage({ params }: PageProps) {
     notFound()
   }
 
+  const { data: contacts } = await supabase
+    .from("contacts")
+    .select("*")
+    .eq("customer_id", id)
+    .order("created_at", { ascending: false })
+
   return (
     <div className="space-y-6">
-      <CustomerDetail customer={customer} />
+      <CustomerDetail customer={customer} contacts={contacts ?? []} />
     </div>
   )
 }

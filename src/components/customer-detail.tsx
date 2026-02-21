@@ -20,6 +20,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { ContactList } from "@/components/contact-list"
+import { type Contact } from "@/lib/validations/contact"
 
 interface Customer {
   id: string
@@ -48,7 +50,7 @@ function formatDate(dateStr: string) {
   })
 }
 
-export function CustomerDetail({ customer }: { customer: Customer }) {
+export function CustomerDetail({ customer, contacts }: { customer: Customer; contacts: Contact[] }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
 
@@ -165,11 +167,7 @@ export function CustomerDetail({ customer }: { customer: Customer }) {
           <TabsTrigger value="tasks">任務</TabsTrigger>
         </TabsList>
         <TabsContent value="contacts">
-          <Card>
-            <CardContent className="py-10 text-center text-muted-foreground">
-              聯絡人功能即將推出
-            </CardContent>
-          </Card>
+          <ContactList customerId={customer.id} initialContacts={contacts} />
         </TabsContent>
         <TabsContent value="interactions">
           <Card>
