@@ -3,26 +3,10 @@
 import { useState, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { TaskCard } from "@/components/task-card"
+import { TaskFormDialog } from "@/components/task-form-dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Plus } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 export interface Task {
   id: string
@@ -53,14 +37,6 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [newTitle, setNewTitle] = useState("")
-  const [newNotes, setNewNotes] = useState("")
-  const [newDueDate, setNewDueDate] = useState("")
-  const [editTitle, setEditTitle] = useState("")
-  const [editNotes, setEditNotes] = useState("")
-  const [editDueDate, setEditDueDate] = useState("")
-  const [editStatus, setEditStatus] = useState("")
-  const router = useRouter()
   const supabase = createClient()
 
   const updateTaskStatus = useCallback(
@@ -94,70 +70,6 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
     setDragOverColumn(null)
     const taskId = e.dataTransfer.getData("text/plain")
     if (taskId) updateTaskStatus(taskId, column)
-  }
-
-  const openDetail = (task: Task) => {
-    setSelectedTask(task)
-    setEditTitle(task.title)
-    setEditNotes(task.notes ?? "")
-    setEditDueDate(task.due_date ?? "")
-    setEditStatus(task.status)
-  }
-
-  const saveDetail = async () => {
-    if (!selectedTask) return
-    const updates = {
-      title: editTitle,
-      notes: editNotes || null,
-      due_date: editDueDate || null,
-      status: editStatus,
-      updated_at: new Date().toISOString(),
-    }
-    await supabase.from("tasks").update(updates).eq("id", selectedTask.id)
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === selectedTask.id ? { ...t, ...updates } : t
-      )
-    )
-    setSelectedTask(null)
-  }
-
-  const createTask = async () => {
-    if (!newTitle.trim()) return
-    const { data: { user } } = await supabase.auth.getUser()
-    const orgId = user?.app_metadata?.org_id
-    if (!orgId) throw new Error("missing org_id")
-    const { data } = await supabase
-      .from("tasks")
-      .insert({
-        title: newTitle.trim(),
-        notes: newNotes || null,
-        due_date: newDueDate || null,
-        status: "todo",
-        source: "manual",
-        org_id: orgId,
-      })
-      .select(`
-        id, title, status, due_date, assigned_to, customer_id,
-        notes, source, created_at, updated_at,
-        customers ( id, name )
-      `)
-      .single()
-
-    if (data) {
-      setTasks((prev) => [data as Task, ...prev])
-    }
-    setNewTitle("")
-    setNewNotes("")
-    setNewDueDate("")
-    setIsCreating(false)
-  }
-
-  const deleteTask = async () => {
-    if (!selectedTask) return
-    await supabase.from("tasks").delete().eq("id", selectedTask.id)
-    setTasks((prev) => prev.filter((t) => t.id !== selectedTask.id))
-    setSelectedTask(null)
   }
 
   return (
@@ -194,7 +106,7 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
                     key={task.id}
                     task={task}
                     onDragStart={handleDragStart}
-                    onClick={openDetail}
+                    onClick={(t) => setSelectedTask(t)}
                   />
                 ))}
               </div>
@@ -204,106 +116,22 @@ export function TaskBoard({ initialTasks }: TaskBoardProps) {
       </div>
 
       {/* Create Dialog */}
-      <Dialog open={isCreating} onOpenChange={setIsCreating}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>新增任務</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>標題</Label>
-              <Input
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="任務標題"
-              />
-            </div>
-            <div>
-              <Label>到期日</Label>
-              <Input
-                type="date"
-                value={newDueDate}
-                onChange={(e) => setNewDueDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>備註</Label>
-              <Textarea
-                value={newNotes}
-                onChange={(e) => setNewNotes(e.target.value)}
-                placeholder="備註..."
-              />
-            </div>
-            <Button onClick={createTask} className="w-full">
-              建立
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <TaskFormDialog
+        open={isCreating}
+        onOpenChange={setIsCreating}
+        onSuccess={(task) => setTasks((prev) => [task, ...prev])}
+      />
 
-      {/* Detail Dialog */}
-      <Dialog open={!!selectedTask} onOpenChange={(open) => !open && setSelectedTask(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>任務詳情</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>標題</Label>
-              <Input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>狀態</Label>
-              <Select value={editStatus} onValueChange={setEditStatus}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todo">待辦</SelectItem>
-                  <SelectItem value="in_progress">進行中</SelectItem>
-                  <SelectItem value="done">完成</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>到期日</Label>
-              <Input
-                type="date"
-                value={editDueDate}
-                onChange={(e) => setEditDueDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>備註</Label>
-              <Textarea
-                value={editNotes}
-                onChange={(e) => setEditNotes(e.target.value)}
-              />
-            </div>
-            {selectedTask?.customers && (
-              <div>
-                <Label>關聯客戶</Label>
-                <p className="text-sm text-muted-foreground">
-                  {Array.isArray(selectedTask.customers)
-                    ? selectedTask.customers[0]?.name
-                    : selectedTask.customers.name}
-                </p>
-              </div>
-            )}
-            <div className="flex gap-2">
-              <Button onClick={saveDetail} className="flex-1">
-                儲存
-              </Button>
-              <Button onClick={deleteTask} variant="destructive" size="sm">
-                刪除
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Edit Dialog */}
+      <TaskFormDialog
+        open={!!selectedTask}
+        onOpenChange={(open) => { if (!open) setSelectedTask(null) }}
+        task={selectedTask}
+        onSuccess={(updated) =>
+          setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
+        }
+        onDelete={(id) => setTasks((prev) => prev.filter((t) => t.id !== id))}
+      />
     </>
   )
 }

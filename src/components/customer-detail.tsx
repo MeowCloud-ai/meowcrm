@@ -22,8 +22,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { ContactList } from "@/components/contact-list"
 import { ActivityList } from "@/components/activity-list"
+import { TaskList } from "@/components/task-list"
 import { type Contact } from "@/lib/validations/contact"
 import { type Activity } from "@/lib/validations/activity"
+import type { Task } from "@/components/task-board"
 
 interface Customer {
   id: string
@@ -52,7 +54,7 @@ function formatDate(dateStr: string) {
   })
 }
 
-export function CustomerDetail({ customer, contacts, activities }: { customer: Customer; contacts: Contact[]; activities: Activity[] }) {
+export function CustomerDetail({ customer, contacts, activities, tasks }: { customer: Customer; contacts: Contact[]; activities: Activity[]; tasks: Task[] }) {
   const router = useRouter()
   const [deleting, setDeleting] = useState(false)
 
@@ -175,11 +177,7 @@ export function CustomerDetail({ customer, contacts, activities }: { customer: C
           <ActivityList customerId={customer.id} initialActivities={activities} contacts={contacts} />
         </TabsContent>
         <TabsContent value="tasks">
-          <Card>
-            <CardContent className="py-10 text-center text-muted-foreground">
-              任務功能即將推出
-            </CardContent>
-          </Card>
+          <TaskList customerId={customer.id} initialTasks={tasks} />
         </TabsContent>
       </Tabs>
     </>
