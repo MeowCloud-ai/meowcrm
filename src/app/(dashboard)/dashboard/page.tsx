@@ -1,9 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
+import { TaskReminders } from "@/components/task-reminders"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
+
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const tomorrowStr = tomorrow.toISOString().split("T")[0]
+
+  const { data: urgentTasks } = await supabase
+    .from("tasks")
+    .select("id, title, status, due_date, customers ( id, name )")
+    .lte("due_date", tomorrowStr)
+    .neq("status", "done")
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">總覽</h1>
+      <TaskReminders tasks={urgentTasks ?? []} />
       <Card>
         <CardHeader>
           <CardTitle>歡迎使用 MeowCRM 🐱</CardTitle>
