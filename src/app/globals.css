@@ -4,11 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════
+   MeowCloud Design System — Design Tokens
+   Source: meowcloud-design/tokens/base.json + semantic.json
+   ═══════════════════════════════════════════════════════════════ */
+
 @theme inline {
+  /* ── shadcn/ui mappings (existing) ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -38,6 +42,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* ── Radius (shadcn base) ── */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -45,75 +51,240 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --radius-pill: 999px;
+  --radius-full: 9999px;
+
+  /* ── Typography — MeowCloud Design Tokens ── */
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── MeowCloud Brand Colors ── */
+  /* Primary (Violet) */
+  --color-mc-primary-50: #faf5ff;
+  --color-mc-primary-100: #f3e8ff;
+  --color-mc-primary-200: #e9d5ff;
+  --color-mc-primary-300: #d8b4fe;
+  --color-mc-primary-400: #c084fc;
+  --color-mc-primary-500: #a855f7;
+  --color-mc-primary-600: #7C3AED;
+  --color-mc-primary-700: #6D28D9;
+  --color-mc-primary-800: #5B21B6;
+  --color-mc-primary-900: #4C1D95;
+
+  /* Pink (Aurora Secondary) */
+  --color-mc-pink-50: #fdf2f8;
+  --color-mc-pink-100: #fce7f3;
+  --color-mc-pink-200: #fbcfe8;
+  --color-mc-pink-300: #f9a8d4;
+  --color-mc-pink-400: #f472b6;
+  --color-mc-pink-500: #EC4899;
+  --color-mc-pink-600: #DB2777;
+  --color-mc-pink-700: #BE185D;
+  --color-mc-pink-800: #9D174D;
+  --color-mc-pink-900: #831843;
+
+  /* Gold (Aurora Accent) */
+  --color-mc-gold-50: #fffbeb;
+  --color-mc-gold-100: #fef3c7;
+  --color-mc-gold-200: #fde68a;
+  --color-mc-gold-300: #fcd34d;
+  --color-mc-gold-400: #fbbf24;
+  --color-mc-gold-500: #F59E0B;
+  --color-mc-gold-600: #D97706;
+  --color-mc-gold-700: #B45309;
+  --color-mc-gold-800: #92400E;
+  --color-mc-gold-900: #78350F;
+
+  /* Neutral (Base) */
+  --color-mc-neutral-0: #ffffff;
+  --color-mc-neutral-50: #fafafa;
+  --color-mc-neutral-100: #f5f5f5;
+  --color-mc-neutral-200: #e5e5e5;
+  --color-mc-neutral-300: #d4d4d4;
+  --color-mc-neutral-400: #a3a3a3;
+  --color-mc-neutral-500: #737373;
+  --color-mc-neutral-600: #525252;
+  --color-mc-neutral-700: #404040;
+  --color-mc-neutral-800: #262626;
+  --color-mc-neutral-900: #171717;
+  --color-mc-neutral-950: #1a1a2e;
+
+  /* Status Colors */
+  --color-mc-success-light: #ecfdf5;
+  --color-mc-success: #059669;
+  --color-mc-success-dark: #047857;
+  --color-mc-warning-light: #fffbeb;
+  --color-mc-warning: #D97706;
+  --color-mc-warning-dark: #B45309;
+  --color-mc-error-light: #fef2f2;
+  --color-mc-error: #DC2626;
+  --color-mc-error-dark: #B91C1C;
+  --color-mc-info-light: #eff6ff;
+  --color-mc-info: #3B82F6;
+  --color-mc-info-dark: #2563EB;
+
+  /* ── Shadows — MeowCloud Design Tokens ── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 4px 14px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+  --shadow-primary-glow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  --shadow-pink-glow: 0 4px 14px rgba(236, 72, 153, 0.35);
+  --shadow-gold-glow: 0 4px 14px rgba(245, 158, 11, 0.35);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 4px 16px rgba(124, 58, 237, 0.1);
+
+  /* ── Z-Index ── */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-overlay: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-toast: 1070;
+  --z-tooltip: 1080;
+
+  /* ── Breakpoints ── */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* ── MeowCloud Light Theme (semantic.json → light) ── */
+  --background: #fafafa;          /* neutral.50 — page bg */
+  --foreground: #1a1a2e;          /* neutral.950 — text primary */
+  --card: #ffffff;                /* neutral.0 — surface */
+  --card-foreground: #1a1a2e;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a2e;
+  --primary: #7C3AED;             /* primary.600 — brand */
+  --primary-foreground: #ffffff;
+  --secondary: #EC4899;           /* pink.500 — Aurora secondary */
+  --secondary-foreground: #ffffff;
+  --muted: #f5f5f5;              /* neutral.100 — subtle bg */
+  --muted-foreground: #737373;   /* neutral.500 — secondary text */
+  --accent: #F59E0B;             /* gold.500 — Aurora accent */
+  --accent-foreground: #ffffff;
+  --destructive: #DC2626;        /* error.base */
+  --border: #f0f0f0;             /* semantic border.default */
+  --input: #e5e5e5;              /* neutral.200 */
+  --ring: #7C3AED;               /* primary.600 — focus ring */
+
+  /* Charts — Aurora palette */
+  --chart-1: #7C3AED;
+  --chart-2: #EC4899;
+  --chart-3: #F59E0B;
+  --chart-4: #059669;
+  --chart-5: #3B82F6;
+
+  /* Sidebar — brand themed */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a2e;
+  --sidebar-primary: #7C3AED;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f0ff;     /* primary-subtle bg */
+  --sidebar-accent-foreground: #7C3AED;
+  --sidebar-border: #f0f0f0;
+  --sidebar-ring: #7C3AED;
+
+  /* ── MeowCloud Semantic Tokens (Light) ── */
+  --mc-bg-page: #fafafa;
+  --mc-bg-surface: #ffffff;
+  --mc-bg-elevated: #ffffff;
+  --mc-bg-subtle: #f5f5f5;
+  --mc-bg-muted: #e5e5e5;
+  --mc-bg-primary: #7C3AED;
+  --mc-bg-primary-subtle: #f3f0ff;
+  --mc-bg-pink: #EC4899;
+  --mc-bg-gold: #F59E0B;
+  --mc-text-primary: #1a1a2e;
+  --mc-text-secondary: #737373;
+  --mc-text-tertiary: #a3a3a3;
+  --mc-text-inverse: #ffffff;
+  --mc-text-brand: #7C3AED;
+  --mc-text-link: #7C3AED;
+  --mc-text-link-hover: #6D28D9;
+  --mc-border-default: #f0f0f0;
+  --mc-border-subtle: #f7f7f7;
+  --mc-border-medium: #e5e5e5;
+  --mc-border-strong: #d4d4d4;
+  --mc-border-focus: #7C3AED;
+
+  /* ── Gradients ── */
+  --mc-gradient-aurora: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B, #EC4899, #7C3AED);
+  --mc-gradient-aurora-subtle: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B);
+  --mc-gradient-primary-glow: linear-gradient(135deg, #7C3AED, #a855f7);
+
+  /* ── Transitions ── */
+  --mc-transition-fast: all 0.1s ease;
+  --mc-transition-default: all 0.15s ease;
+  --mc-transition-normal: all 0.2s ease;
+  --mc-transition-slow: all 0.3s ease;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* ── MeowCloud Dark Theme (semantic.json → dark) ── */
+  --background: #1a1a2e;          /* neutral.950 — dark page bg */
+  --foreground: #e2e8f0;          /* dark text primary */
+  --card: #232340;                /* dark surface */
+  --card-foreground: #e2e8f0;
+  --popover: #232340;
+  --popover-foreground: #e2e8f0;
+  --primary: #7C3AED;
+  --primary-foreground: #ffffff;
+  --secondary: #EC4899;
+  --secondary-foreground: #ffffff;
+  --muted: #2a2a48;              /* dark muted */
+  --muted-foreground: #a3a3a3;   /* neutral.400 */
+  --accent: #F59E0B;
+  --accent-foreground: #1a1a2e;
+  --destructive: #DC2626;
+  --border: #2d2d50;             /* dark border.default */
+  --input: #3d3d5c;              /* dark border.medium */
+  --ring: #a78bfa;               /* lighter purple for dark */
+
+  --chart-1: #a78bfa;
+  --chart-2: #f472b6;
+  --chart-3: #fbbf24;
+  --chart-4: #34d399;
+  --chart-5: #60a5fa;
+
+  --sidebar: #232340;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #a78bfa;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2d2d50;
+  --sidebar-accent-foreground: #a78bfa;
+  --sidebar-border: #2d2d50;
+  --sidebar-ring: #a78bfa;
+
+  /* ── MeowCloud Semantic Tokens (Dark) ── */
+  --mc-bg-page: #1a1a2e;
+  --mc-bg-surface: #232340;
+  --mc-bg-elevated: #2d2d50;
+  --mc-bg-subtle: #1e1e38;
+  --mc-bg-muted: #2a2a48;
+  --mc-bg-primary: #7C3AED;
+  --mc-bg-primary-subtle: #2d2d50;
+  --mc-text-primary: #e2e8f0;
+  --mc-text-secondary: #a3a3a3;
+  --mc-text-tertiary: #737373;
+  --mc-text-inverse: #1a1a2e;
+  --mc-text-brand: #a78bfa;
+  --mc-text-link: #a78bfa;
+  --mc-text-link-hover: #c4b5fd;
+  --mc-border-default: #2d2d50;
+  --mc-border-subtle: #2a2a48;
+  --mc-border-medium: #3d3d5c;
+  --mc-border-strong: #4d4d6a;
+  --mc-border-focus: #a78bfa;
 }
 
 @layer base {
@@ -123,4 +294,37 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ── MeowCloud Aurora Animation ── */
+@keyframes aurora-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.mc-aurora-line {
+  height: 3px;
+  background: var(--mc-gradient-aurora);
+  background-size: 200% 100%;
+  animation: aurora-shift 4s ease infinite;
+}
+
+/* ── MeowCloud Background Accent Blobs ── */
+.mc-blob-purple {
+  background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%);
+  pointer-events: none;
+}
+.mc-blob-pink {
+  background: radial-gradient(circle, rgba(236,72,153,0.05), transparent 70%);
+  pointer-events: none;
+}
+.mc-blob-gold {
+  background: radial-gradient(circle, rgba(245,158,11,0.04), transparent 70%);
+  pointer-events: none;
+}
+
+/* ── MeowCloud Glassmorphism Card ── */
+.mc-glass {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
 }
