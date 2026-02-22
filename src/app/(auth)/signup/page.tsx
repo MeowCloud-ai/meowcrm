@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { MeowCloudLogo } from "@/components/meowcloud-logo"
 
 export default function SignupPage() {
   const [email, setEmail] = useState("")
@@ -53,10 +54,15 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="relative flex min-h-screen items-center justify-center px-4 bg-gradient-to-br from-white via-mc-primary-50/20 to-mc-pink-50/20">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">🐱 註冊成功！</CardTitle>
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="bg-gradient-to-br from-mc-primary-600 via-mc-pink-500 to-mc-gold-500 p-3 rounded-xl">
+                <MeowCloudLogo size={24} className="text-white" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl bg-gradient-to-r from-mc-primary-600 to-mc-pink-600 bg-clip-text text-transparent">註冊成功！</CardTitle>
             <CardDescription>
               請查看您的電子郵件以確認帳戶，然後即可登入。
             </CardDescription>
@@ -72,10 +78,23 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center px-4 bg-gradient-to-br from-white via-mc-primary-50/20 to-mc-pink-50/20">
+      {/* Aurora Background Decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-gradient-to-br from-mc-primary-500/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-gradient-to-bl from-mc-pink-500/5 to-transparent rounded-full blur-3xl"></div>
+      </div>
+      
+      <Card className="relative w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">🐱 MeowCRM</CardTitle>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="bg-gradient-to-br from-mc-primary-600 via-mc-pink-500 to-mc-gold-500 p-3 rounded-xl">
+              <MeowCloudLogo size={24} className="text-white" />
+            </div>
+          </div>
+          <CardTitle className="text-2xl bg-gradient-to-r from-mc-primary-600 to-mc-pink-600 bg-clip-text text-transparent">
+            MeowCRM
+          </CardTitle>
           <CardDescription>建立新帳戶</CardDescription>
         </CardHeader>
         <form onSubmit={handleSignup}>
