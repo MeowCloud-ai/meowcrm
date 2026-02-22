@@ -45,6 +45,14 @@
 | T17 | 設定頁面（組織資訊、成員管理） | S | #17 |
 | T18 | 部署到 Production（Vercel + Supabase） | S | #18 |
 
+## Sprint 6: 認證優化 + 體驗改善
+
+| Task | 標題 | 複雜度 | 對應 Issue |
+|------|------|--------|-----------|
+| T19 | Google OAuth 登入整合 | M | — |
+
+> **T19 說明：** Supabase 免費版確認信不穩定，改用 Google OAuth 作為主要登入方式。需在 Supabase Dashboard 設定 Google Provider + GCP OAuth Client。
+
 ## 未來 Sprint（v0.2）
 
 | Task | 標題 | 說明 |
