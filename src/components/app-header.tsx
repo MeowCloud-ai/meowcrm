@@ -25,17 +25,20 @@ export function AppHeader() {
   }
 
   return (
-    <header className="flex h-14 items-center justify-between border-b px-4">
-      <SidebarTrigger />
-      <div className="flex items-center gap-4">
-        {email && (
-          <span className="text-sm text-muted-foreground">{email}</span>
-        )}
-        <Button variant="ghost" size="sm" onClick={handleLogout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          登出
-        </Button>
+    <header className="border-b">
+      <div className="flex h-14 items-center justify-between px-4">
+        <SidebarTrigger />
+        <div className="flex items-center gap-4">
+          {email && (
+            <span className="text-sm text-muted-foreground">{email}</span>
+          )}
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            登出
+          </Button>
+        </div>
       </div>
+      <div className="mc-aurora-line" />
     </header>
   )
 }
