@@ -65,7 +65,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">總覽</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-mc-primary-600 to-mc-pink-600 bg-clip-text text-transparent">總覽</h1>
         <p className="text-muted-foreground">
           👋 歡迎回來，{userName}！
         </p>

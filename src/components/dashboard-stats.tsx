@@ -24,7 +24,7 @@ export function DashboardStats(props: DashboardStatsProps) {
             <CardTitle className="text-sm font-medium text-muted-foreground">
               {label}
             </CardTitle>
-            <div className={`p-2 rounded-lg ${bgColor}`}>
+            <div className={`p-2 rounded-xl ${bgColor}`}>
               <Icon className={`h-5 w-5 ${color}`} />
             </div>
           </CardHeader>
