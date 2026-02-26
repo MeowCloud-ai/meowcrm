@@ -38,6 +38,7 @@ export default function ForgotPasswordPage() {
   if (success) {
     return (
       <div className="relative flex min-h-screen items-center justify-center px-4 bg-gradient-to-br from-white via-mc-primary-50/20 to-mc-pink-50/20">
+        <h1 className="sr-only">忘記密碼</h1>
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-3 mb-2">
@@ -70,6 +71,7 @@ export default function ForgotPasswordPage() {
         <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-gradient-to-bl from-mc-pink-500/5 to-transparent rounded-full blur-3xl"></div>
       </div>
 
+      <h1 className="sr-only">忘記密碼</h1>
       <Card className="relative w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-3 mb-2">
