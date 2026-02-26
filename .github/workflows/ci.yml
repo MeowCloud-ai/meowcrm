@@ -9,21 +9,24 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key-for-ci
     steps:
       - uses: actions/checkout@v4
-
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-
-      - run: npm ci
-
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       - name: Lint
-        run: npm run lint
-
+        run: pnpm lint
       - name: Type Check
-        run: npm run typecheck
-
+        run: pnpm typecheck
       - name: Test
-        run: npm run test
+        run: pnpm test
+      - name: Build
+        run: pnpm build
