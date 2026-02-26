@@ -14,8 +14,14 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "MeowCRM — 自動導航 CRM",
-  description: "MeowCRM 是一個極簡 CRM 系統，讓會議數據自動流入客戶管理。",
+  metadataBase: new URL('https://crm.meowcloud.ai'),
+  title: { default: 'MeowCRM — 自動導航 CRM', template: '%s | MeowCRM' },
+  description: 'MeowCRM 是專為中小企業打造的智慧 CRM，自動追蹤客戶互動、管理任務、歸檔會議紀錄。免費開始，讓你專注建立關係。',
+  openGraph: {
+    type: 'website',
+    siteName: 'MeowCRM',
+    locale: 'zh_TW',
+  },
 }
 
 export default function RootLayout({
@@ -28,6 +34,9 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-mc-primary-600">
+          跳到主要內容
+        </a>
         {children}
       </body>
     </html>
