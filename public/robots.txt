@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /customers
+Disallow: /contacts
+Disallow: /tasks
+Disallow: /activities
+Disallow: /settings
+
+Sitemap: https://crm.meowcloud.ai/sitemap.xml
