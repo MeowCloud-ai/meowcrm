@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { CustomerList } from "./customer-list"
+import Link from "next/link"
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>
@@ -44,9 +45,17 @@ export default async function CustomersPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">客戶管理</h1>
-        <p className="text-muted-foreground">管理您的客戶資料</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">客戶管理</h1>
+          <p className="text-muted-foreground">管理您的客戶資料</p>
+        </div>
+        <Link
+          href="/customers/new"
+          className="inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-mc-primary-600 to-mc-pink-600 hover:opacity-90 transition-opacity"
+        >
+          新增客戶
+        </Link>
       </div>
 
       <CustomerList

@@ -121,7 +121,7 @@ export function CustomerList({
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-12 text-center">
             <Users className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium">尚無客戶資料</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-mc-text-secondary mt-1">
               {currentSearch || currentStatus !== "all"
                 ? "找不到符合條件的客戶，請調整搜尋或篩選條件"
                 : "開始新增您的第一位客戶吧"}
@@ -146,7 +146,7 @@ export function CustomerList({
                     return (
                       <TableRow
                         key={customer.id}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:border-mc-primary-200"
                         onClick={() => router.push(`/customers/${customer.id}`)}
                       >
                         <TableCell className="font-medium">
