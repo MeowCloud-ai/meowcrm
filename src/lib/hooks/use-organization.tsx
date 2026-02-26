@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/client"
 interface Organization {
   id: string
   name: string
+  plan: string
+  trial_ends_at: string | null
 }
 
 interface OrganizationContextType {
@@ -37,7 +39,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
       if (orgId) {
         const { data: org } = await supabase
           .from("organizations")
-          .select("id, name")
+          .select("id, name, plan, trial_ends_at")
           .eq("id", orgId)
           .single()
 
@@ -49,10 +51,17 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
       }
 
       // No org found — create one
+      const trialEndsAt = new Date()
+      trialEndsAt.setDate(trialEndsAt.getDate() + 14)
+
       const { data: newOrg, error: orgError } = await supabase
         .from("organizations")
-        .insert({ name: `${user.email} 的組織` })
-        .select("id, name")
+        .insert({
+          name: `${user.email} 的組織`,
+          plan: 'trial',
+          trial_ends_at: trialEndsAt.toISOString(),
+        })
+        .select("id, name, plan, trial_ends_at")
         .single()
 
       if (orgError || !newOrg) {

@@ -2,6 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { OrganizationProvider } from "@/lib/hooks/use-organization"
+import { TrialBanner } from "@/components/trial-banner"
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
       <SidebarProvider>
         <AppSidebar />
         <div className="flex flex-1 flex-col">
+          <TrialBanner />
           <AppHeader />
           <main id="main-content" className="flex-1 p-6">{children}</main>
         </div>

@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { OrgSettings } from "@/components/settings/org-settings"
 import { MemberList, type Member } from "@/components/settings/member-list"
 import { ProfileSettings } from "@/components/settings/profile-settings"
@@ -19,13 +21,17 @@ export default async function SettingsPage() {
 
   // Load organization
   let orgName = ""
+  let orgPlan = "trial"
+  let orgTrialEndsAt: string | null = null
   if (orgId) {
     const { data: org } = await supabase
       .from("organizations")
-      .select("name")
+      .select("name, plan, trial_ends_at")
       .eq("id", orgId)
       .single()
     orgName = org?.name ?? ""
+    orgPlan = org?.plan ?? "trial"
+    orgTrialEndsAt = org?.trial_ends_at ?? null
   }
 
   // Load members with user info
@@ -69,6 +75,7 @@ export default async function SettingsPage() {
 
       <div className="grid gap-6">
         <OrgSettings initialName={orgName} userRole={currentRole} />
+        <PlanCard plan={orgPlan} trialEndsAt={orgTrialEndsAt} />
         <MemberList members={members} />
         <ProfileSettings
           email={user.email!}
@@ -77,5 +84,42 @@ export default async function SettingsPage() {
         />
       </div>
     </div>
+  )
+}
+
+function getPlanLabel(plan: string) {
+  const labels: Record<string, string> = {
+    trial: '🎁 免費試用',
+    starter: '🚀 Starter',
+    pro: '⭐ Pro',
+    enterprise: '🏢 Enterprise',
+  }
+  return labels[plan] || plan
+}
+
+function PlanCard({ plan, trialEndsAt }: { plan: string; trialEndsAt: string | null }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>方案</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">目前方案</span>
+            <span className="font-semibold">{getPlanLabel(plan)}</span>
+          </div>
+          {trialEndsAt && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">試用到期</span>
+              <span>{new Date(trialEndsAt).toLocaleDateString('zh-TW')}</span>
+            </div>
+          )}
+          <Button className="w-full mt-4" disabled>
+            升級方案（即將推出）
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
