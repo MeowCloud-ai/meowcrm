@@ -34,9 +34,10 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Public routes that don't require auth
-  const publicRoutes = ["/", "/login", "/signup", "/auth/callback", "/forgot-password", "/reset-password"]
-  const isPublicRoute = publicRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
+  const publicRoutes = ["/login", "/signup", "/auth/callback", "/forgot-password", "/reset-password"]
+  const pathname = request.nextUrl.pathname
+  const isPublicRoute = pathname === "/" || publicRoutes.some((route) =>
+    pathname.startsWith(route)
   )
 
   if (!user && !isPublicRoute) {
@@ -45,8 +46,10 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect logged-in users away from auth pages
-  if (user && isPublicRoute) {
+  // Redirect logged-in users away from auth pages (but not callback/reset routes)
+  const authOnlyRoutes = ["/login", "/signup"]
+  const isAuthPage = pathname === "/" || authOnlyRoutes.some((route) => pathname.startsWith(route))
+  if (user && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
     return NextResponse.redirect(url)
