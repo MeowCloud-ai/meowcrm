@@ -38,13 +38,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b px-6 py-4">
-        <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-mc-primary-600 via-mc-pink-500 to-mc-gold-500 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-lg"></div>
-            <div className="relative bg-gradient-to-br from-mc-primary-600 via-mc-pink-500 to-mc-gold-500 p-2 rounded-xl">
-              <MeowCloudLogo size={20} className="text-white" />
-            </div>
-          </div>
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <MeowCloudLogo size={28} className="text-mc-primary-600" />
           <span className="text-lg font-semibold bg-gradient-to-r from-mc-primary-600 to-mc-pink-600 bg-clip-text text-transparent">
             MeowCRM
           </span>
