@@ -9,6 +9,7 @@ import {
   type CustomerFormValues,
 } from "@/lib/validations/customer"
 import { createClient } from "@/lib/supabase/client"
+import { useOrganization } from "@/lib/hooks/use-organization"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -40,6 +41,7 @@ const statusOptions = [
 
 export function CustomerForm({ defaultValues }: CustomerFormProps) {
   const router = useRouter()
+  const { organization } = useOrganization()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const isEditing = !!defaultValues?.id
@@ -60,9 +62,8 @@ export function CustomerForm({ defaultValues }: CustomerFormProps) {
 
     try {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      const orgId = user?.app_metadata?.org_id
-      if (!orgId) throw new Error("尚未建立組織，請重新登入")
+      const orgId = organization?.id
+      if (!orgId) throw new Error("尚未建立組織，請重新整理頁面")
 
       if (isEditing) {
         const { error: updateError } = await supabase

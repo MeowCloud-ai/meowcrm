@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createClient } from "@/lib/supabase/client"
+import { useOrganization } from "@/lib/hooks/use-organization"
 import { contactFormSchema, type ContactFormValues, type Contact } from "@/lib/validations/contact"
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +35,7 @@ interface ContactFormDialogProps {
 export function ContactFormDialog({ customerId, contact, onSuccess }: ContactFormDialogProps) {
   const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const { organization } = useOrganization()
   const isEdit = !!contact
 
   const form = useForm<ContactFormValues>({
@@ -51,7 +53,7 @@ export function ContactFormDialog({ customerId, contact, onSuccess }: ContactFor
     setSubmitting(true)
     try {
       const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
+      // org_id from useOrganization hook
       const payload = {
         name: values.name,
         title: values.title || null,
@@ -70,7 +72,7 @@ export function ContactFormDialog({ customerId, contact, onSuccess }: ContactFor
       } else {
         const { error } = await supabase
           .from("contacts")
-          .insert({ ...payload, customer_id: customerId, org_id: user?.app_metadata?.org_id })
+          .insert({ ...payload, customer_id: customerId, org_id: organization?.id })
         if (error) throw error
       }
 
