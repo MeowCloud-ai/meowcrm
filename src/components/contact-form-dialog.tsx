@@ -51,6 +51,7 @@ export function ContactFormDialog({ customerId, contact, onSuccess }: ContactFor
     setSubmitting(true)
     try {
       const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
       const payload = {
         name: values.name,
         title: values.title || null,
@@ -69,7 +70,7 @@ export function ContactFormDialog({ customerId, contact, onSuccess }: ContactFor
       } else {
         const { error } = await supabase
           .from("contacts")
-          .insert({ ...payload, customer_id: customerId })
+          .insert({ ...payload, customer_id: customerId, org_id: user?.app_metadata?.org_id })
         if (error) throw error
       }
 

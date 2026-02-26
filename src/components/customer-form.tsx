@@ -60,6 +60,9 @@ export function CustomerForm({ defaultValues }: CustomerFormProps) {
 
     try {
       const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      const orgId = user?.app_metadata?.org_id
+      if (!orgId) throw new Error("尚未建立組織，請重新登入")
 
       if (isEditing) {
         const { error: updateError } = await supabase
@@ -79,6 +82,7 @@ export function CustomerForm({ defaultValues }: CustomerFormProps) {
         const { error: insertError } = await supabase
           .from("customers")
           .insert({
+            org_id: orgId,
             name: values.name,
             industry: values.industry || null,
             status: values.status,
